@@ -1,0 +1,30 @@
+name: Test Monitor Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Test upstream check script
+        run: |
+          # Install jq if not present
+          sudo apt-get update && sudo apt-get install -y jq
+          
+          # Make script executable
+          chmod +x scripts/check-upstream.sh
+          
+          # Run the script
+          ./scripts/check-upstream.sh
+          
+      - name: Test API access
+        run: |
+          # Test that we can access the GitHub API
+          curl -s -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/damongolding/immich-kiosk/commits/main | \
+            jq -r '.sha' | head -c 8
