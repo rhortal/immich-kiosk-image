@@ -29,12 +29,12 @@ Images are tagged with:
 
 Pull the latest image:
 ```bash
-docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-image:latest
+docker pull ghcr.io/rhortal/immich-kiosk-image:latest
 ```
 
 Pull a specific version:
 ```bash
-docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-image:{commit-sha}
+docker pull ghcr.io/rhortal/immich-kiosk-image:{commit-sha}
 ```
 
 ## Repository Structure
