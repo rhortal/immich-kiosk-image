@@ -4,7 +4,7 @@ This repository monitors the main branch of [damongolding/immich-kiosk](https://
 
 ## Features
 
-- **Automated Monitoring**: Checks the upstream repository every 5 minutes for changes
+- **Automated Monitoring**: Checks the upstream repository daily at midnight UTC for changes
 - **Docker Image Building**: Automatically builds and pushes Docker images to GitHub Container Registry
 - **Multi-architecture Support**: Currently focused on Linux/x86_64 (can be extended)
 - **Version Tagging**: Uses commit SHA and timestamps for image tagging
@@ -12,7 +12,7 @@ This repository monitors the main branch of [damongolding/immich-kiosk](https://
 
 ## How It Works
 
-1. **Scheduled Check**: A GitHub Action runs every 5 minutes to check for new commits in the upstream repository
+1. **Scheduled Check**: A GitHub Action runs daily at midnight UTC to check for new commits in the upstream repository
 2. **Change Detection**: Compares the latest commit SHA with the previously stored one
 3. **Trigger Build**: If changes are detected, triggers the Docker build workflow
 4. **Build & Push**: Builds the Docker image for Linux/x86_64 and pushes to GitHub Container Registry
@@ -44,11 +44,12 @@ docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-image:{commit-sha}
 ├── .github/
 │   └── workflows/
 │       ├── monitor.yml          # Monitors upstream repository
-│       └── build-docker.yml     # Builds Docker images
+│       ├── build-docker.yml     # Builds Docker images
+│       └── test.yml             # Test workflows
 ├── scripts/
 │   └── check-upstream.sh        # Script to check for changes
-├── Dockerfile                   # Docker build configuration
 ├── README.md                    # This file
+├── DEVELOPMENT.md               # Development guide
 └── .gitignore                   # Git ignore rules
 ```
 

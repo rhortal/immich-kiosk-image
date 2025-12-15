@@ -40,7 +40,7 @@ To change how often the repository is checked, edit the cron schedule in `.githu
 
 ```yaml
 schedule:
-  - cron: '*/5 * * * *'  # Every 5 minutes
+  - cron: '0 0 * * *'  # Daily at midnight UTC
 ```
 
 Examples:

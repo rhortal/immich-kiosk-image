@@ -10,7 +10,7 @@ STATE_FILE=".last-commit"
 echo "Checking for changes in $UPSTREAM_REPO/$UPSTREAM_BRANCH..."
 
 # Get the latest commit SHA from upstream
-LATEST_COMMIT=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+LATEST_COMMIT=$(curl -s -H "Accept: application/vnd.github+json" \
     "https://api.github.com/repos/$UPSTREAM_REPO/commits/$UPSTREAM_BRANCH" | \
     jq -r '.sha')
 
@@ -43,7 +43,7 @@ echo "$LATEST_COMMIT" > "$STATE_FILE"
 echo "✅ Updated tracked commit to $LATEST_COMMIT"
 
 # Get commit details
-COMMIT_DETAILS=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+COMMIT_DETAILS=$(curl -s -H "Accept: application/vnd.github+json" \
     "https://api.github.com/repos/$UPSTREAM_REPO/commits/$LATEST_COMMIT")
 
 COMMIT_MESSAGE=$(echo "$COMMIT_DETAILS" | jq -r '.commit.message')
