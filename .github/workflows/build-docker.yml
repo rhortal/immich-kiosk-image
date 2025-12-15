@@ -41,21 +41,36 @@ jobs:
         id: upstream-info
         run: |
           if [ -n "${{ inputs.upstream_commit }}" ] && [ "${{ inputs.upstream_commit }}" != "latest" ]; then
+            # Validate commit SHA format (7-40 characters hex)
+            if ! echo "${{ inputs.upstream_commit }}" | grep -qE '^[a-f0-9]{7,40}$'; then
+              echo "Error: Invalid commit SHA format. Expected 7-40 character hexadecimal string."
+              exit 1
+            fi
             COMMIT_SHA="${{ inputs.upstream_commit }}"
           else
             # Get latest commit from upstream
-            COMMIT_SHA=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+            COMMIT_SHA=$(curl -s --max-time 30 --retry 3 -H "Accept: application/vnd.github+json" \
               https://api.github.com/repos/damongolding/immich-kiosk/commits/main | \
               jq -r '.sha')
+            
+            if [ "$COMMIT_SHA" = "null" ] || [ -z "$COMMIT_SHA" ]; then
+              echo "Error: Could not fetch latest commit from upstream repository"
+              exit 1
+            fi
           fi
           
           echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
           
           # Get commit timestamp for tagging
-          TIMESTAMP=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+          TIMESTAMP=$(curl -s --max-time 30 --retry 3 -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/damongolding/immich-kiosk/commits/$COMMIT_SHA | \
             jq -r '.commit.committer.date' | \
             sed 's/[:T]//g' | sed 's/Z$//' | sed 's/-//g')
+          
+          if [ "$TIMESTAMP" = "null" ] || [ -z "$TIMESTAMP" ]; then
+            echo "Error: Could not fetch commit timestamp"
+            exit 1
+          fi
           
           echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
           
