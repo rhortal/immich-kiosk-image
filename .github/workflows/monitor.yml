@@ -60,18 +60,35 @@ jobs:
             echo "changes_detected=true" >> $GITHUB_OUTPUT
           fi
           
-      - name: Store latest commit
-        if: steps.check-upstream.outputs.changes_detected == 'true'
+      
+
+  build:
+    if: needs.monitor.outputs.changes_detected == 'true'
+    needs: monitor
+    uses: ./.github/workflows/build-docker.yml
+    with:
+      upstream_commit: ${{ needs.monitor.outputs.upstream_commit }}
+      trigger_reason: upstream_change
+
+  update-commit-tracking:
+    if: needs.build.result == 'success'
+    needs: [monitor, build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Update tracked commit after successful build
         run: |
-          echo "${{ steps.check-upstream.outputs.latest_commit }}" > .last-commit
+          echo "${{ needs.monitor.outputs.upstream_commit }}" > .last-commit
           
       - name: Commit updated commit SHA
-        if: steps.check-upstream.outputs.changes_detected == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -f .last-commit
-          git diff --staged --quiet || git commit -m "Update tracked commit to ${{ steps.check-upstream.outputs.latest_commit }}"
+          git diff --staged --quiet || git commit -m "Update tracked commit to ${{ needs.monitor.outputs.upstream_commit }} after successful build"
           
           # Retry push with exponential backoff
           for i in {1..3}; do
@@ -84,11 +101,3 @@ jobs:
               git pull --rebase || true
             fi
           done
-
-  build:
-    if: needs.monitor.outputs.changes_detected == 'true'
-    needs: monitor
-    uses: ./.github/workflows/build-docker.yml
-    with:
-      upstream_commit: ${{ needs.monitor.outputs.upstream_commit }}
-      trigger_reason: upstream_change
