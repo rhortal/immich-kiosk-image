@@ -29,12 +29,12 @@ Images are tagged with:
 
 Pull the latest image:
 ```bash
-docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-monitor:latest
+docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-image:latest
 ```
 
 Pull a specific version:
 ```bash
-docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-monitor:{commit-sha}
+docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-image:{commit-sha}
 ```
 
 ## Repository Structure
@@ -55,9 +55,8 @@ docker pull ghcr.io/YOUR_USERNAME/immich-kiosk-monitor:{commit-sha}
 ## Setup
 
 1. Fork this repository
-2. Update the `YOUR_USERNAME` placeholder in workflows with your GitHub username
-3. Enable GitHub Actions in your repository
-4. The workflows will start automatically
+2. Enable GitHub Actions in your repository
+3. The workflows will start automatically
 
 ## Requirements
 
