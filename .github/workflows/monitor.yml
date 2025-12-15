@@ -63,7 +63,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .last-commit
+          git add -f .last-commit
           git diff --staged --quiet || git commit -m "Update tracked commit to ${{ steps.check-upstream.outputs.latest_commit }}"
           git push
 
